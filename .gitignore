@@ -1,0 +1,33 @@
+# Node modules
+node_modules/
+**/node_modules/
+
+# Build output
+dist/
+build/
+
+# Logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# dotenv environment files
+.env
+.env.*
+
+# TypeScript cache
+*.tsbuildinfo
+
+# macOS system files
+.DS_Store
+
+# IDE settings
+.vscode/
+.idea/
+
+# Optional: OS-specific trash folders
+.Trash-*
+
+# Optional: local dev ports
+*.local
