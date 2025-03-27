@@ -60,7 +60,6 @@ wss.on("connection", (socket: WebSocket) => {
 
             switch (parsedMessage.type) {
                 case "NEW_MESSAGE":
-                    const user = users.get(userId);
                     const newMessage: Message = {
                         id: uuidv4(),
                         userId,
@@ -118,6 +117,21 @@ wss.on("connection", (socket: WebSocket) => {
                             });
                         }
                     }
+                    break;
+
+                case "USER_JOINED":
+                    const newUser = parsedMessage.payload as User;
+                    const existingUser = users.get(userId);
+                    if (existingUser) {
+                        existingUser.name = newUser.name;
+                        existingUser.color = newUser.color;
+                        broadcast({
+                            type: "USER_JOINED",
+                            payload: existingUser,
+                        });
+                    }
+                    broadcastParticipants();
+                    break;
             }
         } catch (error) {
             console.log("Error parsing message:", error);
