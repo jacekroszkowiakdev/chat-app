@@ -2,14 +2,14 @@ import express from "express";
 import http from "http";
 import WebSocket, { WebSocketServer } from "ws";
 import { v4 as uuidv4 } from "uuid";
-import { User, Message, WebSocketMessage } from "./types";
+import { PublicUser, WebSocketUser, Message, WebSocketMessage } from "./types";
 
 const app = express();
 const server = http.createServer(app);
 const wss = new WebSocketServer({ server });
 const PORT = 3001;
 
-const users: Map<string, User> = new Map();
+const users: Map<string, WebSocketUser> = new Map();
 const messages: Message[] = [];
 
 function generateColorCode(): string {
@@ -29,9 +29,8 @@ function broadcast(message: WebSocketMessage) {
 }
 
 function broadcastParticipants() {
-    const participants = Array.from(users.values()).map((user: User) => ({
+    const participants = Array.from(users.values()).map((user: PublicUser) => ({
         id: user.id,
-        socket: user.socket,
         name: user.name,
         color: user.color,
     }));
@@ -109,7 +108,7 @@ wss.on("connection", (socket: WebSocket) => {
 
                         if (message.userId === userId) {
                             message.content = "";
-                            message.deleted;
+                            message.deleted = true;
                             message.deletedAt = new Date();
                             broadcast({
                                 type: "DELETE_MESSAGE",
@@ -120,7 +119,7 @@ wss.on("connection", (socket: WebSocket) => {
                     break;
 
                 case "USER_JOINED":
-                    const newUser = parsedMessage.payload as User;
+                    const newUser = parsedMessage.payload as PublicUser;
                     const existingUser = users.get(userId);
                     if (existingUser) {
                         existingUser.name = newUser.name;
@@ -154,7 +153,13 @@ wss.on("connection", (socket: WebSocket) => {
         if (disconnectedUser) {
             users.delete(disconnectedUser.id);
             console.log(`User ${disconnectedUser?.id} disconnected`);
-            broadcast({ type: "USER_LEFT", payload: disconnectedUser });
+            const publicUser: PublicUser = {
+                id: disconnectedUser.id,
+                name: disconnectedUser.name,
+                color: disconnectedUser.color,
+            };
+
+            broadcast({ type: "USER_LEFT", payload: publicUser });
             broadcastParticipants();
         }
     });

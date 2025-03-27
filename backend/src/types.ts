@@ -1,13 +1,16 @@
 import WebSocket from "ws";
 
-export interface User {
+export interface PublicUser {
     id: string;
-    socket: WebSocket;
     name?: string;
     color?: string;
 }
 
-export type Users = User[];
+export interface WebSocketUser extends PublicUser {
+    socket: WebSocket;
+}
+
+export type Users = PublicUser[];
 
 export interface Message {
     id: string;
@@ -21,18 +24,16 @@ export interface Message {
     deletedAt?: Date;
 }
 
-export type MessageType =
-    | "NEW_MESSAGE"
-    | "EDIT_MESSAGE"
-    | "DELETE_MESSAGE"
-    | "USER_JOINED"
-    | "USER_LEFT"
-    | "PARTICIPANT_LIST"
-    | "ERROR";
+interface ChatError {
+    message: string;
+    code?: number;
+}
 
-export type MessagePayload = string | Message | User | Users;
-
-export type WebSocketMessage = {
-    type: MessageType;
-    payload: MessagePayload;
-};
+export type WebSocketMessage =
+    | { type: "NEW_MESSAGE"; payload: Message }
+    | { type: "EDIT_MESSAGE"; payload: Message }
+    | { type: "DELETE_MESSAGE"; payload: Message }
+    | { type: "USER_JOINED"; payload: PublicUser }
+    | { type: "USER_LEFT"; payload: PublicUser }
+    | { type: "PARTICIPANT_LIST"; payload: PublicUser[] }
+    | { type: "ERROR"; payload: ChatError };
