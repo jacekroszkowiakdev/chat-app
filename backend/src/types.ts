@@ -7,6 +7,8 @@ export interface User {
     color?: string;
 }
 
+export type Users = User[];
+
 export interface Message {
     id: string;
     userId: string;
@@ -15,4 +17,22 @@ export interface Message {
     createdAt: Date;
     edited?: boolean;
     editedAt?: Date;
+    deleted?: boolean;
+    deletedAt?: Date;
 }
+
+export type MessageType =
+    | "NEW_MESSAGE"
+    | "EDIT_MESSAGE"
+    | "DELETE_MESSAGE"
+    | "USER_JOINED"
+    | "USER_LEFT"
+    | "PARTICIPANT_LIST"
+    | "ERROR";
+
+export type MessagePayload = string | Message | User | Users;
+
+export type WebSocketMessage = {
+    type: MessageType;
+    payload: MessagePayload;
+};
