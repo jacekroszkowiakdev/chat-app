@@ -8,13 +8,13 @@ import {
     removeUser,
     getParticipants,
     getUserBySocket,
-    handleUserJoined,
 } from "./services/user.service";
+import { handleUserJoined } from "./handlers/user.handlers";
 import {
     handleNewMessage,
     handleEditMessage,
     handleDeleteMessage,
-} from "./services/message.service";
+} from "./handlers/message.handlers";
 
 const app = express();
 const server = http.createServer(app);

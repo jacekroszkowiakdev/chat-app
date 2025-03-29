@@ -26,7 +26,7 @@ export function addUser(socket: WebSocket): WebSocketUser {
     return user;
 }
 
-export function getPublicUser(userId: string): PublicUser | undefined {
+export function getPublicUserById(userId: string): PublicUser | undefined {
     return users.get(userId);
 }
 
@@ -34,28 +34,6 @@ export function getUserBySocket(socket: WebSocket): WebSocketUser | undefined {
     return Array.from(users.values()).find((user) => user.socket === socket);
 }
 
-export function removeUser(userId: string) {
+export function removeUser(userId: string): boolean {
     return users.delete(userId);
-}
-
-// TODO: extract handlers to files
-export function handleUserJoined(
-    userId: string,
-    userData: PublicUser
-): PublicUser | null {
-    const user = users.get(userId);
-
-    if (!user) {
-        console.log(`User not found: ${userId}`);
-        return null;
-    }
-
-    if (userData.name !== undefined) user.name = userData.name;
-    if (userData.color !== undefined) user.color = userData.color;
-
-    return {
-        id: user.id,
-        name: user.name,
-        color: user.color,
-    };
 }
