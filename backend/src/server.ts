@@ -2,7 +2,11 @@ import express from "express";
 import http from "http";
 import WebSocket, { WebSocketServer } from "ws";
 import { PublicUser, WebSocketMessage } from "./types";
-import { broadcast, broadcastParticipants } from "./utils/websocket";
+import {
+    broadcast,
+    broadcastParticipants,
+    sendSocketError,
+} from "./utils/websocket";
 import {
     addUser,
     removeUser,
@@ -54,12 +58,20 @@ wss.on("connection", (socket: WebSocket) => {
                                 wss
                             );
                         } else {
-                            socket.send("Failed to create message");
+                            sendSocketError(
+                                socket,
+                                "Failed to create message",
+                                422
+                            );
                             break;
                         }
                     } catch (error) {
                         console.error("Error processing new message:", error);
-                        socket.send("Error processing message");
+                        sendSocketError(
+                            socket,
+                            "Unexpected error while creating message",
+                            500
+                        );
                     }
                     break;
 
@@ -85,12 +97,20 @@ wss.on("connection", (socket: WebSocket) => {
                                 wss
                             );
                         } else {
-                            socket.send("Failed to edit message");
+                            sendSocketError(
+                                socket,
+                                "Error editing message",
+                                500
+                            );
                             break;
                         }
                     } catch (error) {
                         console.error("Error editing message:", error);
-                        socket.send("Error editing message:");
+                        sendSocketError(
+                            socket,
+                            "Unexpected error while editing message",
+                            500
+                        );
                     }
                     break;
 
@@ -116,12 +136,20 @@ wss.on("connection", (socket: WebSocket) => {
                                 wss
                             );
                         } else {
-                            socket.send("Failed to edit message");
+                            sendSocketError(
+                                socket,
+                                "An error occurred processing your request",
+                                500
+                            );
                             break;
                         }
                     } catch (error) {
                         console.error("Error deleting message:", error);
-                        socket.send("Error deleting message:");
+                        sendSocketError(
+                            socket,
+                            "Unexpected error while deleting message",
+                            500
+                        );
                     }
                     break;
 
@@ -141,21 +169,18 @@ wss.on("connection", (socket: WebSocket) => {
                         }
                     } catch (error) {
                         console.error("Error processing user join:", error);
-                        socket.send("Error processing chat join request");
+                        sendSocketError(
+                            socket,
+                            "Error processing chat join request",
+                            400
+                        );
                     }
                     broadcastParticipants(getParticipants(), wss);
                     break;
             }
         } catch (error) {
             console.log("Error parsing message:", error);
-            socket.send(
-                JSON.stringify({
-                    type: "ERROR",
-                    payload: {
-                        message: "An error occurred processing your request",
-                    },
-                })
-            );
+            sendSocketError(socket, "Invalid message format", 400);
         }
     });
 
@@ -178,6 +203,7 @@ wss.on("connection", (socket: WebSocket) => {
 
     socket.on("error", (error) => {
         console.log("Error:", error);
+        sendSocketError(socket, "Connection error", 500);
     });
 });
 

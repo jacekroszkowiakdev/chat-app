@@ -26,7 +26,7 @@ export interface Message {
 
 interface ChatError {
     message: string;
-    code?: number;
+    code: number;
 }
 
 export type WebSocketMessage =

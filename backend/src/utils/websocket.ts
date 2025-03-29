@@ -23,3 +23,18 @@ export function broadcastParticipants(
         wss
     );
 }
+
+export function sendSocketError(
+    socket: WebSocket,
+    message: string,
+    code: number = 400
+) {
+    const errorMessage: WebSocketMessage = {
+        type: "ERROR",
+        payload: {
+            message,
+            code,
+        },
+    };
+    socket.send(JSON.stringify(errorMessage));
+}
