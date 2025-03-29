@@ -1,55 +1,34 @@
 import express from "express";
 import http from "http";
 import WebSocket, { WebSocketServer } from "ws";
-import { v4 as uuidv4 } from "uuid";
-import { PublicUser, WebSocketUser, Message, WebSocketMessage } from "./types";
+import { PublicUser, WebSocketMessage } from "./types";
+import { broadcast, broadcastParticipants } from "./utils/websocket";
+import {
+    addUser,
+    removeUser,
+    getParticipants,
+    getUserBySocket,
+    handleUserJoined,
+} from "./services/user.service";
+import {
+    handleNewMessage,
+    handleEditMessage,
+    handleDeleteMessage,
+} from "./services/message.service";
 
 const app = express();
 const server = http.createServer(app);
 const wss = new WebSocketServer({ server });
 const PORT = 3001;
 
-const users: Map<string, WebSocketUser> = new Map();
-const messages: Message[] = [];
-
-function generateColorCode(): string {
-    return `#${Math.floor(Math.random() * 0xffffff)
-        .toString(16)
-        .padStart(6, "0")}`;
-}
-
-function broadcast(message: WebSocketMessage) {
-    const messageString = JSON.stringify(message);
-
-    wss.clients.forEach((client) => {
-        if (client.readyState === WebSocket.OPEN) {
-            client.send(messageString);
-        }
-    });
-}
-
-function broadcastParticipants() {
-    const participants = Array.from(users.values()).map((user: PublicUser) => ({
-        id: user.id,
-        name: user.name,
-        color: user.color,
-    }));
-
-    broadcast({ type: "PARTICIPANT_LIST", payload: participants });
-}
-
 wss.on("connection", (socket: WebSocket) => {
     console.log("Client connected");
-    const userId = uuidv4();
-    users.set(userId, {
-        id: userId,
-        socket: socket,
-        name: `User_${userId.slice(0, 7)}`,
-        color: generateColorCode(),
-    });
 
-    console.log(`${userId} joined with name ${users.get(userId)?.name}`);
-    broadcastParticipants();
+    const user = addUser(socket);
+    const userId = user.id;
+    console.log(`${userId} joined with name ${user.name}`);
+
+    broadcastParticipants(getParticipants(), wss);
 
     socket.on("message", (message) => {
         try {
@@ -59,77 +38,112 @@ wss.on("connection", (socket: WebSocket) => {
 
             switch (parsedMessage.type) {
                 case "NEW_MESSAGE":
-                    const newMessage: Message = {
-                        id: uuidv4(),
-                        userId,
-                        userName: `${users.get(userId)?.name}`,
-                        content: (parsedMessage.payload as { content: string })
-                            .content,
-                        createdAt: new Date(),
-                    };
-                    messages.push(newMessage);
-                    console.log("Messages array:", messages);
-                    broadcast({ type: "NEW_MESSAGE", payload: newMessage });
+                    try {
+                        let content = (
+                            parsedMessage.payload as { content: string }
+                        ).content;
+                        const newMessage = handleNewMessage(
+                            userId,
+                            content,
+                            wss
+                        );
+
+                        if (newMessage) {
+                            broadcast(
+                                { type: "NEW_MESSAGE", payload: newMessage },
+                                wss
+                            );
+                        } else {
+                            socket.send("Failed to create message");
+                            break;
+                        }
+                    } catch (error) {
+                        console.error("Error processing new message:", error);
+                        socket.send("Error processing message");
+                    }
                     break;
 
                 case "EDIT_MESSAGE":
-                    const editedMessage = parsedMessage.payload as Message;
-                    const indexToEdit = messages.findIndex(
-                        (message) => message.id === editedMessage.id
-                    );
-                    if (indexToEdit !== -1) {
-                        const message = messages[indexToEdit];
-                        if (message.userId === userId) {
-                            message.content = editedMessage.content;
-                            message.edited = true;
-                            message.editedAt = new Date();
-                            broadcast({
-                                type: "EDIT_MESSAGE",
-                                payload: message,
-                            });
-                        } else {
-                            console.log(
-                                `User ${userId} insufficient permissions to edit message`
+                    try {
+                        let { id, content } = parsedMessage.payload as {
+                            id: string;
+                            content: string;
+                        };
+                        const editedMessage = handleEditMessage(
+                            userId,
+                            id,
+                            content,
+                            wss
+                        );
+
+                        if (editedMessage) {
+                            broadcast(
+                                {
+                                    type: "EDIT_MESSAGE",
+                                    payload: editedMessage,
+                                },
+                                wss
                             );
+                        } else {
+                            socket.send("Failed to edit message");
+                            break;
                         }
-                    } else {
-                        console.log(`Message not found: ${editedMessage.id}`);
+                    } catch (error) {
+                        console.error("Error editing message:", error);
+                        socket.send("Error editing message:");
                     }
                     break;
 
                 case "DELETE_MESSAGE":
-                    const deletedMessageContent =
-                        parsedMessage.payload as Message;
-                    const indexToDelete = messages.findIndex(
-                        (message) => message.id === deletedMessageContent.id
-                    );
-                    if (indexToDelete !== -1) {
-                        const message = messages[indexToDelete];
+                    try {
+                        let { id } = parsedMessage.payload as {
+                            id: string;
+                            content: string;
+                        };
 
-                        if (message.userId === userId) {
-                            message.content = "";
-                            message.deleted = true;
-                            message.deletedAt = new Date();
-                            broadcast({
-                                type: "DELETE_MESSAGE",
-                                payload: message,
-                            });
+                        const deletedMessage = handleDeleteMessage(
+                            userId,
+                            id,
+                            wss
+                        );
+
+                        if (deletedMessage) {
+                            broadcast(
+                                {
+                                    type: "DELETE_MESSAGE",
+                                    payload: deletedMessage,
+                                },
+                                wss
+                            );
+                        } else {
+                            socket.send("Failed to edit message");
+                            break;
                         }
+                    } catch (error) {
+                        console.error("Error deleting message:", error);
+                        socket.send("Error deleting message:");
                     }
                     break;
 
                 case "USER_JOINED":
-                    const newUser = parsedMessage.payload as PublicUser;
-                    const existingUser = users.get(userId);
-                    if (existingUser) {
-                        existingUser.name = newUser.name;
-                        existingUser.color = newUser.color;
-                        broadcast({
-                            type: "USER_JOINED",
-                            payload: existingUser,
-                        });
+                    try {
+                        const newUser = parsedMessage.payload as PublicUser;
+                        const updatedUser = handleUserJoined(userId, newUser);
+
+                        if (updatedUser) {
+                            broadcast(
+                                {
+                                    type: "USER_JOINED",
+                                    payload: updatedUser,
+                                },
+                                wss
+                            );
+                        }
+                    } catch (error) {
+                        console.error("Error processing user join:", error);
+                        socket.send("Error processing chat join request");
                     }
-                    broadcastParticipants();
+                    broadcastParticipants(getParticipants(), wss);
                     break;
             }
         } catch (error) {
@@ -146,21 +160,19 @@ wss.on("connection", (socket: WebSocket) => {
     });
 
     socket.on("close", () => {
-        const disconnectedUser = Array.from(users.values()).find(
-            (user) => user.socket === socket
-        );
+        const disconnectedUser = getUserBySocket(socket);
 
         if (disconnectedUser) {
-            users.delete(disconnectedUser.id);
-            console.log(`User ${disconnectedUser?.id} disconnected`);
             const publicUser: PublicUser = {
                 id: disconnectedUser.id,
                 name: disconnectedUser.name,
                 color: disconnectedUser.color,
             };
 
-            broadcast({ type: "USER_LEFT", payload: publicUser });
-            broadcastParticipants();
+            removeUser(disconnectedUser.id);
+            console.log(`User ${disconnectedUser?.id} disconnected`);
+            broadcast({ type: "USER_LEFT", payload: publicUser }, wss);
+            broadcastParticipants(getParticipants(), wss);
         }
     });
 
