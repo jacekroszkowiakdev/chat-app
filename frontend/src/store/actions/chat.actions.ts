@@ -1,7 +1,6 @@
 import { sendWebSocketMessage } from "../actions/websocket.actions";
 import { AppDispatch } from "../store";
 
-// Send a new message
 export const sendChatMessage = (content: string) => (dispatch: AppDispatch) => {
     if (!content.trim()) return;
 

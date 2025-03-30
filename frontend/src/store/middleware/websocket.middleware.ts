@@ -27,6 +27,16 @@ export const websocketMiddleware: Middleware<unknown, RootState> =
                 console.log("Connected to WebSocket server");
             };
 
+            socket.onmessage = (event) => {
+                const message = JSON.parse(event.data);
+                console.log("Received from WebSocket server:", message);
+
+                store.dispatch({
+                    type: "websocket/messageReceived",
+                    payload: message,
+                });
+            };
+
             socket.onclose = () => {
                 store.dispatch(disconnected());
                 console.log("Disconnected from WebSocket server");

@@ -6,3 +6,6 @@ export const disconnectWebSocket = createAction("websocket/disconnect");
 export const sendWebSocketMessage = createAction<WebSocketMessage>(
     "websocket/sendMessage"
 );
+export const messageReceived = createAction<WebSocketMessage>(
+    "websocket/messageReceived"
+);

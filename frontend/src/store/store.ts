@@ -2,10 +2,12 @@ import { configureStore } from "@reduxjs/toolkit";
 import type { EnhancedStore } from "@reduxjs/toolkit";
 import websocketReducer from "./slices/websocket.slice";
 import websocketMiddleware from "./middleware/websocket.middleware";
+import chatReducer from "./slices/chat.slice";
 
 export const store: EnhancedStore = configureStore({
     reducer: {
         websocket: websocketReducer,
+        chat: chatReducer,
     },
     middleware: (getDefaultMiddleware) =>
         getDefaultMiddleware().concat(websocketMiddleware),

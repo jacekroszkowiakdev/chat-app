@@ -1,16 +1,13 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { WebSocketMessage } from "../../types/types";
 
 interface WebSocketState {
     connected: boolean;
     error: string | null;
-    messages: WebSocketMessage[];
 }
 
 const initialState: WebSocketState = {
     connected: false,
     error: null,
-    messages: [],
 };
 
 export const websocketSlice = createSlice({
