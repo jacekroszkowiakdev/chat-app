@@ -59,7 +59,7 @@ export const websocketMiddleware: Middleware<unknown, RootState> =
                 console.log("Sending to WebSocket server:", action.payload);
                 socket.send(JSON.stringify(action.payload));
             } else {
-                console.error("❗ WebSocket is not open. Cannot send message.");
+                console.error("WebSocket is not open. Cannot send message.");
                 store.dispatch(
                     connectionError(
                         "WebSocket is not open. Cannot send message."
@@ -70,3 +70,5 @@ export const websocketMiddleware: Middleware<unknown, RootState> =
 
         return next(action);
     };
+
+export default websocketMiddleware;

@@ -121,10 +121,8 @@ frontend/
 
 ---
 
-## 📬 Contact
+## 📇 Contact & Info
 
-Feel free to reach out with suggestions or issues via [GitHub Issues](https://github.com/jacekroszkowiakdev/chat-app/issues).
-
----
-
-Made with ❤️ by Jacek Roszkowiak
+-   **Author:** Jacek Roszkowiak
+-   **Email:** [jacekroszkowiakdev@gmail.com](mailto:jacekroszkowiakdev@gmail.com)
+-   **Repository:** [https://github.com/jacekroszkowiakdev/chat-app/](https://github.com/jacekroszkowiakdev/chat-app/)

@@ -38,7 +38,7 @@ const Chat = () => {
 
     return (
         <div style={{ padding: "2rem" }}>
-            <h2>📡 Chat Component</h2>
+            <h2>Chat Component</h2>
             <button onClick={handleSendMessage}>Send Test Message</button>
         </div>
     );

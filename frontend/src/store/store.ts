@@ -1,10 +1,14 @@
 import { configureStore } from "@reduxjs/toolkit";
-import websocketSlice from "./slices/websocket.slice";
+import type { EnhancedStore } from "@reduxjs/toolkit";
+import websocketReducer from "./slices/websocket.slice";
+import websocketMiddleware from "./middleware/websocket.middleware";
 
-export const store = configureStore({
+export const store: EnhancedStore = configureStore({
     reducer: {
-        websocket: websocketSlice,
+        websocket: websocketReducer,
     },
+    middleware: (getDefaultMiddleware) =>
+        getDefaultMiddleware().concat(websocketMiddleware),
 });
 
 export type RootState = ReturnType<typeof store.getState>;
