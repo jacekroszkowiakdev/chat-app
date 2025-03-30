@@ -7,7 +7,6 @@ import {
     deleteMessage,
 } from "../services/message.service";
 
-const messages: Message[] = [];
 export function handleNewMessage(
     userId: string,
     content: string,

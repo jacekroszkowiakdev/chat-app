@@ -9,7 +9,7 @@ export function createMessage(user: PublicUser, content: string): Message {
         userId: user.id,
         userName: user.name || `User_${user.id.slice(0, 7)}`,
         content,
-        createdAt: new Date(),
+        createdAt: new Date().toISOString(),
     };
 
     messages.push(newMessage);
@@ -34,7 +34,7 @@ export function editMessage(
     if (message.userId === userId) {
         message.content = content;
         message.edited = true;
-        message.editedAt = new Date();
+        message.editedAt = new Date().toISOString();
         return message;
     } else {
         console.log(`User ${userId} insufficient permissions to edit message`);
@@ -59,7 +59,7 @@ export function deleteMessage(
     if (message.userId === userId) {
         message.content = "";
         message.deleted = true;
-        message.deletedAt = new Date();
+        message.deletedAt = new Date().toISOString();
         return message;
     } else {
         console.log(

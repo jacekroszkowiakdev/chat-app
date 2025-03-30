@@ -1,13 +1,7 @@
-import WebSocket from "ws";
-
 export interface PublicUser {
     id: string;
     name?: string;
     color?: string;
-}
-
-export interface WebSocketUser extends PublicUser {
-    socket: WebSocket;
 }
 
 export type Users = PublicUser[];

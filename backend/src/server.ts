@@ -39,6 +39,10 @@ wss.on("connection", (socket: WebSocket) => {
             const parsedMessage: WebSocketMessage = JSON.parse(
                 message.toString()
             );
+            console.log(
+                "[Backend] Message received from client:",
+                parsedMessage
+            );
 
             switch (parsedMessage.type) {
                 case "NEW_MESSAGE":
@@ -50,6 +54,10 @@ wss.on("connection", (socket: WebSocket) => {
                             userId,
                             content,
                             wss
+                        );
+                        console.log(
+                            "[Backend] Message received from client:",
+                            parsedMessage
                         );
 
                         if (newMessage) {
