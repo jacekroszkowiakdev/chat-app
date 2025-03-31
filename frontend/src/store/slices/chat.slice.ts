@@ -50,7 +50,10 @@ const chatSlice = createSlice({
                             (message) => message.id === editedMessage.id
                         );
                         if (index !== -1) {
-                            state.messages[index] = editedMessage;
+                            state.messages[index] = {
+                                ...state.messages[index],
+                                ...editedMessage,
+                            };
                         }
                         break;
                     }

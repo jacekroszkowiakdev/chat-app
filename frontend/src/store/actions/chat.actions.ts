@@ -16,7 +16,6 @@ export const sendChatMessage =
             sendWebSocketMessage({
                 type: "NEW_MESSAGE",
                 payload: {
-                    id: "",
                     userId: user.id,
                     userName: user.name,
                     createdAt: new Date().toISOString(),

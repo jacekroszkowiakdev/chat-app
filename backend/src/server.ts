@@ -86,10 +86,13 @@ wss.on("connection", (socket: WebSocket) => {
 
                 case "EDIT_MESSAGE":
                     try {
-                        let { id, content } = parsedMessage.payload as {
-                            id: string;
-                            content: string;
-                        };
+                        let { id, content, editedAt, edited } =
+                            parsedMessage.payload as {
+                                id: string;
+                                content: string;
+                                editedAt: string;
+                                edited: boolean;
+                            };
                         console.log(
                             `{Backend} Handling EDIT_MESSAGE for ID: ${id}`
                         );
@@ -97,6 +100,8 @@ wss.on("connection", (socket: WebSocket) => {
                             userId,
                             id,
                             content,
+                            editedAt,
+                            edited,
                             wss
                         );
 

@@ -22,9 +22,11 @@ export function handleEditMessage(
     userId: string,
     messageId: string,
     content: string,
+    editedAt: string,
+    edited: boolean,
     _wss: WebSocketServer
 ): Message | null {
-    return editMessage(userId, messageId, content);
+    return editMessage(userId, messageId, content, editedAt, edited);
 }
 
 export function handleDeleteMessage(

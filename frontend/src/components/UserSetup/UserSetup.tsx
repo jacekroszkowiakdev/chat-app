@@ -9,22 +9,13 @@ const UserSetup = () => {
     const dispatch = useDispatch<AppDispatch>();
     const [userName, setUserName] = useState("");
 
-    const presetColors = [
-        "#FF5C5C",
-        "#FFD700",
-        "#5CB85C",
-        "#5BC0DE",
-        "#9966FF",
-    ];
-    const [selectedColor, setSelectedColor] = useState<string | null>(null);
-
     const waitForWebSocket = () => {
         return new Promise<void>((resolve, reject) => {
             const maxAttempts = 10;
             let attempts = 0;
 
             const check = () => {
-                const currentState: RootState = store.getState(); // import your store here
+                const currentState: RootState = store.getState();
                 if (currentState.websocket.connected) {
                     resolve();
                 } else if (attempts < maxAttempts) {
@@ -45,7 +36,7 @@ const UserSetup = () => {
             return;
         }
 
-        dispatch(setUserDetails({ name: userName, color: `${selectedColor}` }));
+        dispatch(setUserDetails({ name: userName }));
         dispatch(markUserJoined());
 
         try {
@@ -56,7 +47,6 @@ const UserSetup = () => {
                     type: "USER_JOINED",
                     payload: {
                         name: userName,
-                        color: selectedColor || undefined,
                     },
                 })
             );
@@ -70,30 +60,13 @@ const UserSetup = () => {
             <h2>User Setup</h2>
             <input
                 type="text"
-                placeholder="Enter your name"
+                id="username"
+                name="username"
                 value={userName}
                 onChange={(e) => setUserName(e.target.value)}
+                placeholder="Enter your name"
+                autoComplete="username"
             />
-            <div style={{ display: "flex", gap: "0.5rem", margin: "1rem 0" }}>
-                {presetColors.map((color) => (
-                    <button
-                        key={color}
-                        onClick={() => setSelectedColor(color)}
-                        style={{
-                            width: "2rem",
-                            height: "2rem",
-                            borderRadius: "50%",
-                            border:
-                                selectedColor === color
-                                    ? "3px solid black"
-                                    : "1px solid #ccc",
-                            backgroundColor: color,
-                            cursor: "pointer",
-                        }}
-                    />
-                ))}
-            </div>
-
             <button onClick={handleSubmit}>Join Chat</button>
         </div>
     );

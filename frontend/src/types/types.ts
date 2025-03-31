@@ -18,14 +18,23 @@ export interface Message {
     deletedAt?: string;
 }
 
+export type NewMessagePayload = Omit<Message, "id">;
+
+export type EditedMessagePayload = {
+    id: string;
+    content: string;
+    editedAt: string;
+    edited: boolean;
+};
+
 interface ChatError {
     message: string;
     code: number;
 }
 
 export type WebSocketMessage =
-    | { type: "NEW_MESSAGE"; payload: Message }
-    | { type: "EDIT_MESSAGE"; payload: Message }
+    | { type: "NEW_MESSAGE"; payload: NewMessagePayload }
+    | { type: "EDIT_MESSAGE"; payload: EditedMessagePayload }
     | { type: "DELETE_MESSAGE"; payload: Message }
     | { type: "USER_JOINED"; payload: PublicUser }
     | { type: "USER_LEFT"; payload: PublicUser }

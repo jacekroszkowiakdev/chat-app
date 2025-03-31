@@ -17,9 +17,11 @@ export function createMessage(user: PublicUser, content: string): Message {
 }
 
 export function editMessage(
+    userId: string,
     messageId: string,
     content: string,
-    userId: string
+    editedAt: string,
+    edited: boolean
 ): Message | null {
     const indexToEdit = messages.findIndex(
         (message) => message.id === messageId
@@ -31,15 +33,19 @@ export function editMessage(
     }
 
     const message = messages[indexToEdit];
-    if (message.userId === userId) {
-        message.content = content;
-        message.edited = true;
-        message.editedAt = new Date().toISOString();
-        return message;
-    } else {
-        console.log(`User ${userId} insufficient permissions to edit message`);
+
+    if (message.userId !== userId) {
+        console.log(
+            `User ${userId} does not have permission to edit this message`
+        );
         return null;
     }
+
+    message.content = content;
+    message.edited = edited;
+    message.editedAt = editedAt;
+
+    return message;
 }
 
 export function deleteMessage(
