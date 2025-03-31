@@ -39,7 +39,6 @@ wss.on("connection", (socket: WebSocket) => {
             const parsedMessage: WebSocketMessage = JSON.parse(
                 message.toString()
             );
-            // console.log("[Backend] Received message:", parsedMessage);
 
             switch (parsedMessage.type) {
                 case "NEW_MESSAGE":
@@ -86,7 +85,7 @@ wss.on("connection", (socket: WebSocket) => {
 
                 case "EDIT_MESSAGE":
                     try {
-                        let { id, content, editedAt, edited } =
+                        const { id, content, editedAt, edited } =
                             parsedMessage.payload as {
                                 id: string;
                                 content: string;
@@ -137,9 +136,8 @@ wss.on("connection", (socket: WebSocket) => {
 
                 case "DELETE_MESSAGE":
                     try {
-                        let { id } = parsedMessage.payload as {
+                        const { id } = parsedMessage.payload as {
                             id: string;
-                            content: string;
                         };
                         console.log(
                             `{Backend} Handling DELETE_MESSAGE for ID: ${id}`

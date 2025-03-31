@@ -34,5 +34,5 @@ export function handleDeleteMessage(
     messageId: string,
     _wss: WebSocketServer
 ): Message | null {
-    return deleteMessage(userId, messageId);
+    return deleteMessage(messageId, userId);
 }

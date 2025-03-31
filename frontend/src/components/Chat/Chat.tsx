@@ -10,7 +10,6 @@ const Chat = () => {
     const user = useSelector((state: RootState) => state.user);
     const [editingMessage, setEditingMessage] = useState<Message | null>(null);
     const messages = useSelector((state: RootState) => state.chat.messages);
-    console.log("Messages from Redux store:", messages);
 
     const handleEdit = (id: string, content: string) => {
         dispatch(
@@ -30,6 +29,21 @@ const Chat = () => {
 
     const handleCancelEdit = () => {
         setEditingMessage(null);
+    };
+
+    const handleDelete = (messageId: string) => {
+        dispatch(
+            sendWebSocketMessage({
+                type: "DELETE_MESSAGE",
+                payload: {
+                    id: messageId,
+                    userId: user.id,
+                },
+            })
+        );
+        if (editingMessage?.id === messageId) {
+            setEditingMessage(null);
+        }
     };
 
     return (
@@ -53,12 +67,17 @@ const Chat = () => {
                             <p>
                                 {msg.content} {msg.edited && <i>(edited)</i>}
                             </p>
-                            {msg.userId === user.id && (
+                            {msg.userId === user.id && !msg.deleted && (
                                 <div className="message-actions">
                                     <button
                                         onClick={() => setEditingMessage(msg)}
                                     >
                                         Edit
+                                    </button>
+                                    <button
+                                        onClick={() => handleDelete(msg.id)}
+                                    >
+                                        Delete
                                     </button>
                                 </div>
                             )}

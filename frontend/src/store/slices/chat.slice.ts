@@ -65,9 +65,12 @@ const chatSlice = createSlice({
                                 (message) => message.id === deletedMessage.id
                             );
                             if (deleteIndex !== -1) {
-                                state.messages[deleteIndex].deleted = true;
-                                state.messages[deleteIndex].deletedAt =
-                                    new Date().toISOString();
+                                state.messages[deleteIndex] = {
+                                    ...state.messages[deleteIndex],
+                                    content: "(Message was deleted)",
+                                    deleted: true,
+                                    deletedAt: deletedMessage.deletedAt,
+                                };
                             }
                         }
                         break;

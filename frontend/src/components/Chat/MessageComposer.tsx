@@ -73,6 +73,7 @@ const MessageComposer: React.FC<MessageComposerProps> = ({
             };
             dispatch(sendWebSocketMessage(messagePayload));
         }
+        setMessageInput("");
     };
 
     return (
@@ -92,9 +93,10 @@ const MessageComposer: React.FC<MessageComposerProps> = ({
                 {editingMessage ? (
                     <>
                         <button
-                            onClick={() =>
-                                onEdit(editingMessage.id, messageInput)
-                            }
+                            onClick={() => {
+                                onEdit(editingMessage.id, messageInput);
+                                setMessageInput("");
+                            }}
                         >
                             Save
                         </button>

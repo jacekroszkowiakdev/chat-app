@@ -27,6 +27,13 @@ export type EditedMessagePayload = {
     edited: boolean;
 };
 
+export type deletedMessagePayload = {
+    id: string;
+    userId: string;
+    deleted?: boolean;
+    deletedAt?: string;
+};
+
 interface ChatError {
     message: string;
     code: number;
@@ -35,7 +42,7 @@ interface ChatError {
 export type WebSocketMessage =
     | { type: "NEW_MESSAGE"; payload: NewMessagePayload }
     | { type: "EDIT_MESSAGE"; payload: EditedMessagePayload }
-    | { type: "DELETE_MESSAGE"; payload: Message }
+    | { type: "DELETE_MESSAGE"; payload: deletedMessagePayload }
     | { type: "USER_JOINED"; payload: PublicUser }
     | { type: "USER_LEFT"; payload: PublicUser }
     | { type: "PARTICIPANT_LIST"; payload: PublicUser[] }
