@@ -39,7 +39,7 @@ wss.on("connection", (socket: WebSocket) => {
             const parsedMessage: WebSocketMessage = JSON.parse(
                 message.toString()
             );
-            console.log("[Backend] Received message:", parsedMessage);
+            // console.log("[Backend] Received message:", parsedMessage);
 
             switch (parsedMessage.type) {
                 case "NEW_MESSAGE":
@@ -181,14 +181,18 @@ wss.on("connection", (socket: WebSocket) => {
                 case "USER_JOINED":
                     try {
                         const newUser = parsedMessage.payload as PublicUser;
-                        console.log("[Backend] Handling USER_JOINED:", newUser);
+                        // console.log("[Backend] Handling USER_JOINED:", newUser);
                         const updatedUser = handleUserJoined(userId, newUser);
+                        // console.log(
+                        //     "[Backend] Result from handleUserJoined:",
+                        //     updatedUser
+                        // );
 
                         if (updatedUser) {
-                            console.log(
-                                "[Backend] Broadcasting USER_JOINED:",
-                                updatedUser
-                            );
+                            // console.log(
+                            //     "[Backend] Broadcasting USER_JOINED:",
+                            //     updatedUser
+                            // );
                             broadcast(
                                 {
                                     type: "USER_JOINED",

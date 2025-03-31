@@ -1,10 +1,10 @@
-import { useEffect } from "react";
+// import { useEffect, useRef } from "react";
 import { useDispatch } from "react-redux";
 import { AppDispatch } from "../../store/store";
 import {
-    connectWebSocket,
+    // connectWebSocket,
     sendWebSocketMessage,
-    disconnectWebSocket,
+    // disconnectWebSocket,
 } from "../../store/actions/websocket.actions";
 import { WebSocketMessage } from "../../types/types";
 import { useSelector } from "react-redux";
@@ -18,15 +18,7 @@ const Chat = () => {
     );
     const messages = useSelector((state: RootState) => state.chat.messages);
     console.log("Messages from Redux store:", messages);
-
-    useEffect(() => {
-        dispatch(connectWebSocket());
-        console.log("Mounting Chat component and connecting to WebSocket");
-
-        return () => {
-            dispatch(disconnectWebSocket());
-        };
-    }, [dispatch]);
+    // const socketRef = useRef<WebSocket | null>(null);
 
     const handleSendMessage = () => {
         if (!isConnected) {

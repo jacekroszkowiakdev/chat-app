@@ -4,6 +4,7 @@ import {
     connectWebSocket,
     disconnectWebSocket,
     sendWebSocketMessage,
+    messageReceived,
 } from "../actions/websocket.actions";
 import {
     connected,
@@ -29,12 +30,11 @@ export const websocketMiddleware: Middleware<unknown, RootState> =
 
             socket.onmessage = (event) => {
                 const message = JSON.parse(event.data);
+                console.log("typeof message:", typeof message);
+                console.log("message.type:", message.type);
                 console.log("Received from WebSocket server:", message);
 
-                store.dispatch({
-                    type: "websocket/messageReceived",
-                    payload: message,
-                });
+                store.dispatch(messageReceived(message));
             };
 
             socket.onclose = () => {
@@ -65,7 +65,11 @@ export const websocketMiddleware: Middleware<unknown, RootState> =
 
         // Send message
         else if (sendWebSocketMessage.match(action)) {
-            if (socket && socket.readyState === WebSocket.OPEN) {
+            if (
+                socket !== null &&
+                (socket.readyState === WebSocket.OPEN ||
+                    socket.readyState === WebSocket.CONNECTING)
+            ) {
                 console.log("Sending to WebSocket server:", action.payload);
                 socket.send(JSON.stringify(action.payload));
             } else {

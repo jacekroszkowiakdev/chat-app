@@ -41,7 +41,6 @@ const chatSlice = createSlice({
                             if (!exists) {
                                 state.messages.push(newMsg);
                             }
-                            console.log("[chatSlice] Handling NEW_MESSAGE:");
                         }
                         break;
 
@@ -69,9 +68,11 @@ const chatSlice = createSlice({
                             }
                         }
                         break;
+
                     case "USER_JOINED":
                         {
                             const newUser = payload as PublicUser;
+                            console.log("[chatSlice] USER_JOINED:", newUser);
                             if (
                                 !state.participants.some(
                                     (user) => user.id === newUser.id
@@ -81,6 +82,7 @@ const chatSlice = createSlice({
                             }
                         }
                         break;
+
                     case "USER_LEFT":
                         {
                             const disconnectedUser = payload as PublicUser;
@@ -89,12 +91,14 @@ const chatSlice = createSlice({
                             );
                         }
                         break;
+
                     case "PARTICIPANT_LIST":
                         {
                             const participants = payload as PublicUser[];
                             state.participants = participants;
                         }
                         break;
+
                     case "ERROR":
                         {
                             const errorMessage = (
