@@ -1,3 +1,4 @@
+import "./styles/global.css";
 import Chat from "./components/Chat/Chat.tsx";
 
 const App = () => {

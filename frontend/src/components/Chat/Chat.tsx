@@ -1,3 +1,4 @@
+import "./Chat.css";
 import { useEffect, useState } from "react";
 import {
     connectWebSocket,
@@ -31,28 +32,37 @@ const Chat = () => {
             {!userReady ? (
                 <UserSetup onComplete={() => setUserReady(true)} />
             ) : (
-                <div>
-                    <div className="tab-buttons">
-                        <button
-                            onClick={() => setActiveTab("chat")}
-                            className={activeTab === "chat" ? "active" : ""}
-                        >
-                            Chat
-                        </button>
-                        <button
-                            onClick={() => setActiveTab("participants")}
-                            className={
-                                activeTab === "participants" ? "active" : ""
-                            }
-                        >
-                            Participants ({participants.length})
-                        </button>
+                <div className="chat-container">
+                    <div className="chat-header">
+                        <div className="chat-header-top">
+                            Status Meeting Standup
+                        </div>
+                        <div className="tab-buttons">
+                            <button
+                                onClick={() => setActiveTab("participants")}
+                                className={`tab-button ${
+                                    activeTab === "participants" ? "active" : ""
+                                }`}
+                            >
+                                Participants ({participants.length})
+                            </button>
+                            <button
+                                onClick={() => setActiveTab("chat")}
+                                className={`tab-button ${
+                                    activeTab === "chat" ? "active" : ""
+                                }`}
+                            >
+                                Chat
+                            </button>
+                        </div>
                     </div>
 
-                    {activeTab === "chat" && <DisplayChat />}
-                    {activeTab === "participants" && (
-                        <DisplayParticipants participants={participants} />
-                    )}
+                    <div className="chat-content">
+                        {activeTab === "participants" && (
+                            <DisplayParticipants participants={participants} />
+                        )}
+                        {activeTab === "chat" && <DisplayChat />}
+                    </div>
                 </div>
             )}
         </div>

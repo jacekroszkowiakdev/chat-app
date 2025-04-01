@@ -1,3 +1,4 @@
+import "./DisplayChat.css";
 import { useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { sendWebSocketMessage } from "../../../store/actions/websocket.actions";
@@ -47,37 +48,24 @@ const DisplayChat = () => {
     };
 
     return (
-        <div style={{ padding: "2rem" }}>
-            <h3>Status Meeting Standup</h3>
-            {/* <div className="tab-buttons">
-                <button
-                    onClick={() => setActiveTab("chat")}
-                    className={activeTab === "chat" ? "active" : ""}
-                >
-                    Chat
-                </button>
-                <button
-                    onClick={() => setActiveTab("participants")}
-                    className={activeTab === "participants" ? "active" : ""}
-                >
-                    Participants
-                </button>
-            </div> */}
-
+        <div className="display-chat">
             {messages.length === 0 ? (
-                <p>No messages yet.</p>
+                <p className="no-messages">No messages yet.</p>
             ) : (
-                <ul
-                    style={{
-                        backgroundColor: "white",
-                        padding: "1rem",
-                        borderRadius: "5px",
-                        listStyle: "none",
-                        margin: 0,
-                    }}
-                >
+                <ul className="message-list">
                     {messages.map((msg: Message) => (
-                        <li key={msg.id} style={{ marginBottom: "1rem" }}>
+                        <li key={msg.id} className="message-item">
+                            <div className="message-meta">
+                                <strong className="message-user">
+                                    {msg.userName}
+                                </strong>
+                                <span className="message-time">
+                                    {new Date(msg.createdAt).toLocaleTimeString(
+                                        [],
+                                        { hour: "2-digit", minute: "2-digit" }
+                                    )}
+                                </span>
+                            </div>
                             <p>
                                 {msg.content} {msg.edited && <i>(edited)</i>}
                             </p>
@@ -100,11 +88,13 @@ const DisplayChat = () => {
                 </ul>
             )}
 
-            <MessageComposer
-                editingMessage={editingMessage}
-                onEdit={handleEdit}
-                onCancelEdit={handleCancelEdit}
-            />
+            <div className="composer-wrapper">
+                <MessageComposer
+                    editingMessage={editingMessage}
+                    onEdit={handleEdit}
+                    onCancelEdit={handleCancelEdit}
+                />
+            </div>
         </div>
     );
 };

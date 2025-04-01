@@ -1,3 +1,4 @@
+import "./MessageComposer.css";
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch } from "../../../../store/store";
@@ -79,33 +80,33 @@ const MessageComposer: React.FC<MessageComposerProps> = ({
     return (
         <div className="message-composer">
             <label htmlFor="message-input" className="sr-only">
-                HIDE THIS WITH CSS :)
+                Message input
             </label>
             <textarea
                 id="message-input"
+                className="composer-textarea"
                 name="message"
                 value={messageInput}
                 onChange={handleInputChange}
                 onKeyDown={handleSendOnEnter}
                 placeholder={editingMessage ? "Editing message..." : "Message"}
             />
-            <div className="actions">
-                {editingMessage ? (
-                    <>
-                        <button
-                            onClick={() => {
-                                onEdit(editingMessage.id, messageInput);
-                                setMessageInput("");
-                            }}
-                        >
-                            Save
-                        </button>
-                        <button onClick={onCancelEdit}>Cancel</button>
-                    </>
-                ) : (
-                    <button onClick={handleSendMessage}>Send</button>
-                )}
-            </div>
+            {editingMessage && (
+                <div className="composer-actions">
+                    <button
+                        className="composer-button save"
+                        onClick={() => onEdit(editingMessage.id, messageInput)}
+                    >
+                        Save
+                    </button>
+                    <button
+                        className="composer-button cancel"
+                        onClick={onCancelEdit}
+                    >
+                        Cancel
+                    </button>
+                </div>
+            )}
         </div>
     );
 };

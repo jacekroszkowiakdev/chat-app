@@ -98,15 +98,14 @@ frontend/
 ├── src/
 │   ├── components/         # React components
 │   ├── store/
-│   │   ├── middleware/     # Custom Redux middleware (e.g. WebSocket)
+│   │   ├── middleware/     # Custom Redux middleware (WebSocket)
 │   │   └── slices/         # Redux slices (state logic)
-│   ├── hooks/              # Custom hooks
-│   ├── services/           # Service helpers (optional)
+│   ├── styles/             # Global styles
 │   ├── types/              # Shared TypeScript types
 │   ├── utils/              # Utility functions
 │   ├── App.tsx             # Root component
-│   ├── main.tsx            # Entry point
-│   └── index.css           # Global styles
+│   └── main.tsx            # Entry point
+│
 ├── package.json
 ├── tsconfig.json
 └── vite.config.ts

@@ -1,3 +1,4 @@
+import "./UserSetup.css";
 import React, { useState } from "react";
 import { useDispatch } from "react-redux";
 import { AppDispatch, RootState } from "../../store/store";
@@ -61,8 +62,7 @@ const UserSetup: React.FC<UserSetupProps> = ({ onComplete }) => {
     };
 
     return (
-        <div style={{ padding: "2rem" }}>
-            <h2>User Setup</h2>
+        <div className="user-setup-container">
             <input
                 type="text"
                 id="username"

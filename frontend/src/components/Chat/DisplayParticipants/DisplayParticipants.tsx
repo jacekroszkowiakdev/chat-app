@@ -1,3 +1,4 @@
+import "./DisplayParticipants.css";
 import { PublicUser } from "../../../types/types";
 import React from "react";
 
@@ -13,12 +14,16 @@ const DisplayParticipants: React.FC<DisplayParticipantsProps> = ({
     }
 
     return (
-        <div>
-            <ul>
-                {participants.map((participant: PublicUser) => (
-                    <li key={participant.id}>{participant.name}</li>
-                ))}
-            </ul>
+        <div className="display-participants-wrapper">
+            <div className="display-participants">
+                <ul className="participants-list">
+                    {participants.map((participant: PublicUser) => (
+                        <li className="participant-item" key={participant.id}>
+                            <p>{participant.name}</p>
+                        </li>
+                    ))}
+                </ul>
+            </div>
         </div>
     );
 };

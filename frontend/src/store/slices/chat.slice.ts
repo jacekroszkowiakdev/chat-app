@@ -31,9 +31,9 @@ export function pushChatLogMessage(
     const displayName = user.name || `User_${user.id.slice(0, 5)}`;
 
     messages.push({
-        id: `system-${action}-${user.id}-${Date.now()}`,
-        userId: "system",
-        userName: "System",
+        id: `Meetingbot-${action}-${user.id}-${Date.now()}`,
+        userId: "Meetingbot",
+        userName: "Meetingbot",
         content: `${displayName} ${action} the chat`,
         createdAt: new Date().toISOString(),
     });
