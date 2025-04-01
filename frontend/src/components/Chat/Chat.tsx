@@ -1,111 +1,60 @@
-import { useState } from "react";
-import { useSelector, useDispatch } from "react-redux";
-import { sendWebSocketMessage } from "../../store/actions/websocket.actions";
+import { useEffect, useState } from "react";
+import {
+    connectWebSocket,
+    disconnectWebSocket,
+} from "../../store/actions/websocket.actions";
 import { RootState } from "../../store/store";
-import MessageComposer from "./MessageComposer";
-import { Message } from "../../types/types";
+import { useSelector, useDispatch } from "react-redux";
+import UserSetup from "../UserSetup/UserSetup";
+import DisplayChat from "../Chat/DisplayChat/DisplayChat";
+import DisplayParticipants from "../Chat/DisplayParticipants/DisplayParticipants";
 
 const Chat = () => {
     const dispatch = useDispatch();
-    const user = useSelector((state: RootState) => state.user);
-    const [editingMessage, setEditingMessage] = useState<Message | null>(null);
-    const messages = useSelector((state: RootState) => state.chat.messages);
+    const participants = useSelector(
+        (state: RootState) => state.chat.participants
+    );
+    const joined = useSelector((state: RootState) => state.user.joined);
+    const [userReady, setUserReady] = useState(false);
     const [activeTab, setActiveTab] = useState<"chat" | "participants">("chat");
 
-    const handleEdit = (id: string, content: string) => {
-        dispatch(
-            sendWebSocketMessage({
-                type: "EDIT_MESSAGE",
-                payload: {
-                    id,
-                    content,
-                    editedAt: new Date().toISOString(),
-                    edited: true,
-                },
-            })
-        );
-
-        setEditingMessage(null);
-    };
-
-    const handleCancelEdit = () => {
-        setEditingMessage(null);
-    };
-
-    const handleDelete = (messageId: string) => {
-        dispatch(
-            sendWebSocketMessage({
-                type: "DELETE_MESSAGE",
-                payload: {
-                    id: messageId,
-                    userId: user.id,
-                },
-            })
-        );
-        if (editingMessage?.id === messageId) {
-            setEditingMessage(null);
-        }
-    };
+    useEffect(() => {
+        if (!joined) return;
+        dispatch(connectWebSocket());
+        return () => {
+            dispatch(disconnectWebSocket());
+        };
+    }, [joined, dispatch]);
 
     return (
-        <div style={{ padding: "2rem" }}>
-            <h3>Status Meeting Standup</h3>
-            <div className="tab-buttons">
-                <button
-                    onClick={() => setActiveTab("chat")}
-                    className={activeTab === "chat" ? "active" : ""}
-                >
-                    Chat
-                </button>
-                <button
-                    onClick={() => setActiveTab("participants")}
-                    className={activeTab === "participants" ? "active" : ""}
-                >
-                    Participants
-                </button>
-            </div>
-
-            {messages.length === 0 ? (
-                <p>No messages yet.</p>
+        <div>
+            {!userReady ? (
+                <UserSetup onComplete={() => setUserReady(true)} />
             ) : (
-                <ul
-                    style={{
-                        backgroundColor: "white",
-                        padding: "1rem",
-                        borderRadius: "5px",
-                        listStyle: "none",
-                        margin: 0,
-                    }}
-                >
-                    {messages.map((msg: Message) => (
-                        <li key={msg.id} style={{ marginBottom: "1rem" }}>
-                            <p>
-                                {msg.content} {msg.edited && <i>(edited)</i>}
-                            </p>
-                            {msg.userId === user.id && !msg.deleted && (
-                                <div className="message-actions">
-                                    <button
-                                        onClick={() => setEditingMessage(msg)}
-                                    >
-                                        Edit
-                                    </button>
-                                    <button
-                                        onClick={() => handleDelete(msg.id)}
-                                    >
-                                        Delete
-                                    </button>
-                                </div>
-                            )}
-                        </li>
-                    ))}
-                </ul>
-            )}
+                <div>
+                    <div className="tab-buttons">
+                        <button
+                            onClick={() => setActiveTab("chat")}
+                            className={activeTab === "chat" ? "active" : ""}
+                        >
+                            Chat
+                        </button>
+                        <button
+                            onClick={() => setActiveTab("participants")}
+                            className={
+                                activeTab === "participants" ? "active" : ""
+                            }
+                        >
+                            Participants ({participants.length})
+                        </button>
+                    </div>
 
-            <MessageComposer
-                editingMessage={editingMessage}
-                onEdit={handleEdit}
-                onCancelEdit={handleCancelEdit}
-            />
+                    {activeTab === "chat" && <DisplayChat />}
+                    {activeTab === "participants" && (
+                        <DisplayParticipants participants={participants} />
+                    )}
+                </div>
+            )}
         </div>
     );
 };

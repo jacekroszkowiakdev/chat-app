@@ -1,9 +1,9 @@
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { AppDispatch } from "../../store/store";
-import { sendWebSocketMessage } from "../../store/actions/websocket.actions";
-import { RootState } from "../../store/store";
-import { WebSocketMessage, Message } from "../../types/types";
+import { AppDispatch } from "../../../../store/store";
+import { sendWebSocketMessage } from "../../../../store/actions/websocket.actions";
+import { RootState } from "../../../../store/store";
+import { WebSocketMessage, Message } from "../../../../types/types";
 
 interface MessageComposerProps {
     editingMessage: Message | null;

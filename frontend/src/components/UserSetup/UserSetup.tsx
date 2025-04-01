@@ -1,11 +1,15 @@
-import { useState } from "react";
+import React, { useState } from "react";
 import { useDispatch } from "react-redux";
 import { AppDispatch, RootState } from "../../store/store";
 import { setUserDetails, markUserJoined } from "../../store/slices/user.slice";
 import { sendWebSocketMessage } from "../../store/actions/websocket.actions";
 import { store } from "../../store/store";
 
-const UserSetup = () => {
+interface UserSetupProps {
+    onComplete: () => void;
+}
+
+const UserSetup: React.FC<UserSetupProps> = ({ onComplete }) => {
     const dispatch = useDispatch<AppDispatch>();
     const [userName, setUserName] = useState("");
 
@@ -50,6 +54,7 @@ const UserSetup = () => {
                     },
                 })
             );
+            onComplete();
         } catch (error) {
             console.error("WebSocket connection error:", error);
         }
