@@ -14,6 +14,31 @@ const initialState: ChatState = {
     error: null,
 };
 
+// push chat log message util
+
+export function pushChatLogMessage(
+    messages: Message[],
+    user: PublicUser,
+    action: "joined" | "left"
+): void {
+    if (!user || !user.id) {
+        console.warn(
+            `[chatSlice] Skipping USER_${action.toUpperCase()} system message: invalid user`
+        );
+        return;
+    }
+
+    const displayName = user.name || `User_${user.id.slice(0, 5)}`;
+
+    messages.push({
+        id: `system-${action}-${user.id}-${Date.now()}`,
+        userId: "system",
+        userName: "System",
+        content: `${displayName} ${action} the chat`,
+        createdAt: new Date().toISOString(),
+    });
+}
+
 const chatSlice = createSlice({
     name: "chat",
     initialState,
@@ -34,7 +59,6 @@ const chatSlice = createSlice({
                     case "NEW_MESSAGE":
                         {
                             const newMsg = payload as Message;
-
                             const exists = state.messages.some(
                                 (m) => m.id === newMsg.id
                             );
@@ -86,14 +110,41 @@ const chatSlice = createSlice({
                             ) {
                                 state.participants.push(newUser);
                             }
+
+                            if (!newUser || !newUser.id) {
+                                console.warn(
+                                    "[chatSlice] Skipping USER_JOINED system message: invalid user"
+                                );
+                                break;
+                            }
+
+                            pushChatLogMessage(
+                                state.messages,
+                                newUser,
+                                "joined"
+                            );
                         }
                         break;
 
                     case "USER_LEFT":
                         {
                             const disconnectedUser = payload as PublicUser;
+
                             state.participants = state.participants.filter(
                                 (user) => user.id !== disconnectedUser.id
+                            );
+
+                            if (!disconnectedUser || !disconnectedUser.id) {
+                                console.warn(
+                                    "[chatSlice] Skipping USER_LEFT system message: invalid user"
+                                );
+                                break;
+                            }
+
+                            pushChatLogMessage(
+                                state.messages,
+                                disconnectedUser,
+                                "left"
                             );
                         }
                         break;

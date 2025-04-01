@@ -10,6 +10,7 @@ const Chat = () => {
     const user = useSelector((state: RootState) => state.user);
     const [editingMessage, setEditingMessage] = useState<Message | null>(null);
     const messages = useSelector((state: RootState) => state.chat.messages);
+    const [activeTab, setActiveTab] = useState<"chat" | "participants">("chat");
 
     const handleEdit = (id: string, content: string) => {
         dispatch(
@@ -48,7 +49,21 @@ const Chat = () => {
 
     return (
         <div style={{ padding: "2rem" }}>
-            <h3>Messages</h3>
+            <h3>Status Meeting Standup</h3>
+            <div className="tab-buttons">
+                <button
+                    onClick={() => setActiveTab("chat")}
+                    className={activeTab === "chat" ? "active" : ""}
+                >
+                    Chat
+                </button>
+                <button
+                    onClick={() => setActiveTab("participants")}
+                    className={activeTab === "participants" ? "active" : ""}
+                >
+                    Participants
+                </button>
+            </div>
 
             {messages.length === 0 ? (
                 <p>No messages yet.</p>
