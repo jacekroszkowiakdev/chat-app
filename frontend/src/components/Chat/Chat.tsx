@@ -1,18 +1,14 @@
 import "./Chat.css";
-import { useEffect, useState } from "react";
-import {
-    connectWebSocket,
-    disconnectWebSocket,
-} from "../../store/actions/websocket.actions";
+import { useState } from "react";
 import { RootState } from "../../store/store";
-import { useSelector, useDispatch } from "react-redux";
+import { useSelector } from "react-redux";
 import UserSetup from "../UserSetup/UserSetup";
 import DisplayChat from "../Chat/DisplayChat/DisplayChat";
 import DisplayParticipants from "../Chat/DisplayParticipants/DisplayParticipants";
 import ThemeToggle from "../ui/ThemeToggle/ThemeToggle";
+import { useWebSocket } from "../../hooks/useWebSocket";
 
 const Chat = () => {
-    const dispatch = useDispatch();
     const participants = useSelector(
         (state: RootState) => state.chat.participants
     );
@@ -20,13 +16,7 @@ const Chat = () => {
     const [userReady, setUserReady] = useState(false);
     const [activeTab, setActiveTab] = useState<"chat" | "participants">("chat");
 
-    useEffect(() => {
-        if (!joined) return;
-        dispatch(connectWebSocket());
-        return () => {
-            dispatch(disconnectWebSocket());
-        };
-    }, [joined, dispatch]);
+    useWebSocket(joined);
 
     return (
         <div>

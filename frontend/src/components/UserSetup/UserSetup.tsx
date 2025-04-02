@@ -1,39 +1,19 @@
 import "./UserSetup.css";
 import React, { useState } from "react";
 import { useDispatch } from "react-redux";
-import { AppDispatch, RootState } from "../../store/store";
+import { AppDispatch } from "../../store/store";
 import { setUserDetails, markUserJoined } from "../../store/slices/user.slice";
 import { sendWebSocketMessage } from "../../store/actions/websocket.actions";
-import { store } from "../../store/store";
+import { useWaitForWebSocket } from "../../hooks/useWaitForWebSocket";
 
 interface UserSetupProps {
     onComplete: () => void;
 }
 
 const UserSetup: React.FC<UserSetupProps> = ({ onComplete }) => {
+    const waitForWebSocket = useWaitForWebSocket();
     const dispatch = useDispatch<AppDispatch>();
     const [userName, setUserName] = useState("");
-
-    const waitForWebSocket = () => {
-        return new Promise<void>((resolve, reject) => {
-            const maxAttempts = 10;
-            let attempts = 0;
-
-            const check = () => {
-                const currentState: RootState = store.getState();
-                if (currentState.websocket.connected) {
-                    resolve();
-                } else if (attempts < maxAttempts) {
-                    attempts++;
-                    setTimeout(check, 300);
-                } else {
-                    reject(new Error("WebSocket not connected"));
-                }
-            };
-
-            check();
-        });
-    };
 
     const handleSubmit = async () => {
         if (!userName.trim()) {
@@ -69,6 +49,9 @@ const UserSetup: React.FC<UserSetupProps> = ({ onComplete }) => {
                 name="username"
                 value={userName}
                 onChange={(e) => setUserName(e.target.value)}
+                onKeyDown={(e) => {
+                    if (e.key === "Enter") handleSubmit();
+                }}
                 placeholder="Enter your name"
                 autoComplete="username"
             />

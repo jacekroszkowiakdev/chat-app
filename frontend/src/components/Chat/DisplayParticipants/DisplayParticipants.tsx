@@ -1,5 +1,6 @@
 import "./DisplayParticipants.css";
 import { PublicUser } from "../../../types/types";
+import ParticipantItem from "./ParticipantItem/ParticipantItem";
 import React from "react";
 
 interface DisplayParticipantsProps {
@@ -18,9 +19,10 @@ const DisplayParticipants: React.FC<DisplayParticipantsProps> = ({
             <div className="display-participants">
                 <ul className="participants-list">
                     {participants.map((participant: PublicUser) => (
-                        <li className="participant-item" key={participant.id}>
-                            <p>{participant.name}</p>
-                        </li>
+                        <ParticipantItem
+                            key={participant.id}
+                            participant={participant}
+                        />
                     ))}
                 </ul>
             </div>
