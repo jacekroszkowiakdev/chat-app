@@ -54,7 +54,13 @@ const DisplayChat = () => {
             ) : (
                 <ul className="message-list">
                     {messages.map((msg: Message) => (
-                        <li key={msg.id} className="message-item">
+                        // <li key={msg.id} className="message-item">
+                        <li
+                            key={msg.id}
+                            className={`message-item ${
+                                msg.userId === user.id ? "own-message" : ""
+                            }`}
+                        >
                             <div className="message-meta">
                                 <strong className="message-user">
                                     {msg.userName}
@@ -62,27 +68,37 @@ const DisplayChat = () => {
                                 <span className="message-time">
                                     {new Date(msg.createdAt).toLocaleTimeString(
                                         [],
-                                        { hour: "2-digit", minute: "2-digit" }
+                                        {
+                                            hour: "2-digit",
+                                            minute: "2-digit",
+                                        }
                                     )}
                                 </span>
                             </div>
-                            <p>
-                                {msg.content} {msg.edited && <i>(edited)</i>}
-                            </p>
-                            {msg.userId === user.id && !msg.deleted && (
-                                <div className="message-actions">
-                                    <button
-                                        onClick={() => setEditingMessage(msg)}
-                                    >
-                                        Edit
-                                    </button>
-                                    <button
-                                        onClick={() => handleDelete(msg.id)}
-                                    >
-                                        Delete
-                                    </button>
-                                </div>
-                            )}
+
+                            <div className="message-content-wrapper">
+                                <p className="message-content">
+                                    {msg.content}{" "}
+                                    {msg.edited && <i>(edited)</i>}
+                                </p>
+
+                                {msg.userId === user.id && !msg.deleted && (
+                                    <div className="message-hover-actions">
+                                        <button
+                                            onClick={() =>
+                                                setEditingMessage(msg)
+                                            }
+                                        >
+                                            Edit
+                                        </button>
+                                        <button
+                                            onClick={() => handleDelete(msg.id)}
+                                        >
+                                            Delete
+                                        </button>
+                                    </div>
+                                )}
+                            </div>
                         </li>
                     ))}
                 </ul>

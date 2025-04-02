@@ -132,6 +132,15 @@ body.dark .display-chat .message-actions button {
     color: #eee;
 }
 
+body.dark .message-hover-actions button {
+    background-color: #444;
+    color: #eee;
+}
+
+body.dark .message-hover-actions button:hover {
+    background-color: #666;
+}
+
 body.dark .display-chat .message-actions button:hover {
     background-color: #666;
 }
