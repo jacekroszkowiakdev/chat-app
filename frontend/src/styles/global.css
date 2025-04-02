@@ -10,29 +10,33 @@
     font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
     line-height: 1.5;
     font-weight: 400;
-
-    color-scheme: light;
     color: #111;
     background-color: #f9f9f9;
-
     font-synthesis: none;
     text-rendering: optimizeLegibility;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
-
-    min-height: 100vh;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    padding: 1rem;
 }
 
 html,
 body {
     margin: 0;
     padding: 0;
+    min-height: 100vh;
     color: #111;
+    background-color: #f9f9f9;
     font-family: system-ui, sans-serif;
+}
+
+body {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 1rem;
+}
+
+#root {
+    background-color: #f9f9f9;
 }
 
 button {
@@ -51,4 +55,93 @@ textarea {
     border: 1px solid #ccc;
     border-radius: 4px;
     color: black;
+    background-color: white;
+}
+
+.dark-theme {
+    --bg-color: #2a2a2a;
+    --text-color: #eee;
+    --border-color: #555;
+    --input-bg: #333;
+    --button-bg: #444;
+    --button-hover: #666;
+}
+
+body.dark {
+    color-scheme: dark;
+    background-color: #2a2a2a;
+    color: #eee;
+}
+
+body.dark html {
+    background-color: #2a2a2a;
+}
+
+body.dark #root {
+    background-color: #2a2a2a;
+}
+
+body.dark input,
+body.dark textarea {
+    background-color: #333;
+    color: #eee;
+    border-color: #666;
+}
+
+body.dark .chat-header {
+    background-color: #7a7a7a;
+    color: #eee;
+}
+
+body.dark .chat-container {
+    background-color: #2a2a2a;
+    color: #eee;
+}
+
+body.dark .tab-button.active {
+    background-color: #2a2a2a;
+    color: #fff;
+}
+
+body.dark .message-list {
+    background-color: #2a2a2a;
+    color: #eee;
+}
+
+body.dark .message-item {
+    color: #7a7a7a;
+}
+
+body.dark .message-item p {
+    color: #7a7a7a;
+}
+
+body.dark .participants-list {
+    background-color: #2a2a2a;
+    color: #eee;
+    border-bottom: 1px solid #555;
+}
+
+body.dark .participant-item {
+    color: #eee;
+    border-bottom: 1px solid #555;
+}
+
+body.dark .display-chat .message-actions button {
+    background-color: #444;
+    color: #eee;
+}
+
+body.dark .display-chat .message-actions button:hover {
+    background-color: #666;
+}
+
+body.dark .message-composer {
+    background-color: #2a2a2a;
+    color: #eee;
+}
+
+body.dark .composer-wrapper {
+    background-color: #2a2a2a;
+    color: #eee;
 }

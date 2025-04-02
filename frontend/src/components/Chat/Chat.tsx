@@ -9,6 +9,7 @@ import { useSelector, useDispatch } from "react-redux";
 import UserSetup from "../UserSetup/UserSetup";
 import DisplayChat from "../Chat/DisplayChat/DisplayChat";
 import DisplayParticipants from "../Chat/DisplayParticipants/DisplayParticipants";
+import ThemeToggle from "../ui/ThemeToggle/ThemeToggle";
 
 const Chat = () => {
     const dispatch = useDispatch();
@@ -33,6 +34,7 @@ const Chat = () => {
                 <UserSetup onComplete={() => setUserReady(true)} />
             ) : (
                 <div className="chat-container">
+                    <ThemeToggle />
                     <div className="chat-header">
                         <div className="chat-header-top">
                             Status Meeting Standup
