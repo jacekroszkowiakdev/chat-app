@@ -22,7 +22,6 @@ export const websocketMiddleware: Middleware<unknown, RootState> =
             if (socket && socket.readyState === WebSocket.OPEN) return;
 
             socket = new WebSocket(import.meta.env.VITE_WS_URL);
-
             socket.onopen = () => {
                 store.dispatch(connected());
                 console.log("[WebSocket] Connected to server");

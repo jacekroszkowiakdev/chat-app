@@ -5,13 +5,15 @@
     "main": "index.js",
     "scripts": {
         "test": "echo \"Error: no test specified\" && exit 1",
-        "dev": "ts-node-dev src/server.ts"
+        "dev": "ts-node-dev src/server.ts",
+        "backend": "ts-node src/server.ts"
     },
     "keywords": [],
     "author": "Jacek Roszkowiak",
     "license": "ISC",
     "type": "commonjs",
     "dependencies": {
+        "dotenv": "^16.4.7",
         "express": "^4.21.2",
         "uuid": "^11.1.0",
         "ws": "^8.18.1"

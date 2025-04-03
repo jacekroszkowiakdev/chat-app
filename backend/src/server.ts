@@ -1,4 +1,5 @@
 import express from "express";
+import dotenv from "dotenv";
 import http from "http";
 import WebSocket, { WebSocketServer } from "ws";
 import { PublicUser, WebSocketMessage } from "./types";
@@ -20,10 +21,12 @@ import {
     handleDeleteMessage,
 } from "./handlers/message.handlers";
 
+dotenv.config();
 const app = express();
 const server = http.createServer(app);
 const wss = new WebSocketServer({ server });
-const PORT = 3001;
+const PORT = parseInt(process.env.PORT || "3001", 10);
+const HOST = process.env.HOST || "localhost";
 
 wss.on("connection", (socket: WebSocket) => {
     const user = addUser(socket);
@@ -220,6 +223,6 @@ wss.on("connection", (socket: WebSocket) => {
     });
 });
 
-server.listen(PORT, () => {
-    console.log(`🚀 Server started on port ${PORT}`);
+server.listen(PORT, HOST, () => {
+    console.log(`Server started on port ${PORT}`);
 });
