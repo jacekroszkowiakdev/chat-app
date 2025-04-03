@@ -26,11 +26,8 @@ const wss = new WebSocketServer({ server });
 const PORT = 3001;
 
 wss.on("connection", (socket: WebSocket) => {
-    console.log("Client connected");
-
     const user = addUser(socket);
     const userId = user.id;
-    console.log(`${userId} joined with name ${user.name}`);
 
     broadcastParticipants(getParticipants(), wss);
 
@@ -43,13 +40,10 @@ wss.on("connection", (socket: WebSocket) => {
             switch (parsedMessage.type) {
                 case "NEW_MESSAGE":
                     try {
-                        let content = (
+                        const content = (
                             parsedMessage.payload as { content: string }
                         ).content;
-                        console.log(
-                            "[Backend] Handling NEW_MESSAGE with content:",
-                            content
-                        );
+
                         const newMessage = handleNewMessage(
                             userId,
                             content,
@@ -57,10 +51,6 @@ wss.on("connection", (socket: WebSocket) => {
                         );
 
                         if (newMessage) {
-                            console.log(
-                                "[Backend] Broadcasting NEW_MESSAGE:",
-                                newMessage
-                            );
                             broadcast(
                                 { type: "NEW_MESSAGE", payload: newMessage },
                                 wss
@@ -71,10 +61,12 @@ wss.on("connection", (socket: WebSocket) => {
                                 "Failed to create message",
                                 422
                             );
-                            break;
                         }
                     } catch (error) {
-                        console.error("Error processing NEW_MESSAGE:", error);
+                        console.error(
+                            "[WebSocket] Error processing NEW_MESSAGE:",
+                            error
+                        );
                         sendSocketError(
                             socket,
                             "Unexpected error while creating message",
@@ -92,9 +84,7 @@ wss.on("connection", (socket: WebSocket) => {
                                 editedAt: string;
                                 edited: boolean;
                             };
-                        console.log(
-                            `{Backend} Handling EDIT_MESSAGE for ID: ${id}`
-                        );
+
                         const editedMessage = handleEditMessage(
                             userId,
                             id,
@@ -105,10 +95,6 @@ wss.on("connection", (socket: WebSocket) => {
                         );
 
                         if (editedMessage) {
-                            console.log(
-                                "[Backend] Broadcasting EDIT_MESSAGE:",
-                                editedMessage
-                            );
                             broadcast(
                                 {
                                     type: "EDIT_MESSAGE",
@@ -122,10 +108,12 @@ wss.on("connection", (socket: WebSocket) => {
                                 "Error editing message",
                                 500
                             );
-                            break;
                         }
                     } catch (error) {
-                        console.error("Error processing EDIT_MESSAGE:", error);
+                        console.error(
+                            "[WebSocket] Error processing EDIT_MESSAGE:",
+                            error
+                        );
                         sendSocketError(
                             socket,
                             "Unexpected error while editing message",
@@ -139,9 +127,7 @@ wss.on("connection", (socket: WebSocket) => {
                         const { id } = parsedMessage.payload as {
                             id: string;
                         };
-                        console.log(
-                            `{Backend} Handling DELETE_MESSAGE for ID: ${id}`
-                        );
+
                         const deletedMessage = handleDeleteMessage(
                             userId,
                             id,
@@ -149,10 +135,6 @@ wss.on("connection", (socket: WebSocket) => {
                         );
 
                         if (deletedMessage) {
-                            console.log(
-                                "[Backend] Broadcasting DELETE_MESSAGE:",
-                                deletedMessage
-                            );
                             broadcast(
                                 {
                                     type: "DELETE_MESSAGE",
@@ -166,11 +148,10 @@ wss.on("connection", (socket: WebSocket) => {
                                 "An error occurred processing your request",
                                 500
                             );
-                            break;
                         }
                     } catch (error) {
                         console.error(
-                            "Error processing DELETE_MESSAGE:",
+                            "[WebSocket] Error processing DELETE_MESSAGE:",
                             error
                         );
                         sendSocketError(
@@ -184,18 +165,9 @@ wss.on("connection", (socket: WebSocket) => {
                 case "USER_JOINED":
                     try {
                         const newUser = parsedMessage.payload as PublicUser;
-                        // console.log("[Backend] Handling USER_JOINED:", newUser);
                         const updatedUser = handleUserJoined(userId, newUser);
-                        // console.log(
-                        //     "[Backend] Result from handleUserJoined:",
-                        //     updatedUser
-                        // );
 
                         if (updatedUser) {
-                            // console.log(
-                            //     "[Backend] Broadcasting USER_JOINED:",
-                            //     updatedUser
-                            // );
                             broadcast(
                                 {
                                     type: "USER_JOINED",
@@ -205,18 +177,22 @@ wss.on("connection", (socket: WebSocket) => {
                             );
                         }
                     } catch (error) {
-                        console.error("Error processing USER_JOINED:", error);
+                        console.error(
+                            "[WebSocket] Error processing USER_JOINED:",
+                            error
+                        );
                         sendSocketError(
                             socket,
                             "Error processing chat join request",
                             400
                         );
                     }
+
                     broadcastParticipants(getParticipants(), wss);
                     break;
             }
         } catch (error) {
-            console.log("Error parsing message:", error);
+            console.error("[WebSocket] Error parsing message:", error);
             sendSocketError(socket, "Invalid message format", 400);
         }
     });
@@ -232,18 +208,18 @@ wss.on("connection", (socket: WebSocket) => {
             };
 
             removeUser(disconnectedUser.id);
-            console.log(`User ${disconnectedUser?.id} disconnected`);
+
             broadcast({ type: "USER_LEFT", payload: publicUser }, wss);
             broadcastParticipants(getParticipants(), wss);
         }
     });
 
     socket.on("error", (error) => {
-        console.log("Error:", error);
+        console.error("[WebSocket] Connection error:", error);
         sendSocketError(socket, "Connection error", 500);
     });
 });
 
 server.listen(PORT, () => {
-    console.log(`Server started on port ${PORT}`);
+    console.log(`🚀 Server started on port ${PORT}`);
 });

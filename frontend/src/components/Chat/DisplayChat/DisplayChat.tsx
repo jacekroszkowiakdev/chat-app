@@ -34,10 +34,9 @@ const DisplayChat = () => {
 
     const Row = useCallback(
         ({ index, style }: ListChildComponentProps) => {
-            console.log("Rendering row:", index);
             const msg = messages[index];
             return (
-                <li style={style}>
+                <div style={style}>
                     <MessageItem
                         key={msg.id}
                         message={msg}
@@ -45,7 +44,7 @@ const DisplayChat = () => {
                         onEdit={() => setEditingMessage(msg)}
                         onDelete={() => handleDelete(msg.id)}
                     />
-                </li>
+                </div>
             );
         },
         [messages, user.id, handleDelete]

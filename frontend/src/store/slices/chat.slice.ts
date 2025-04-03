@@ -103,7 +103,7 @@ const chatSlice = createSlice({
                     case "USER_JOINED":
                         {
                             const newUser = payload as PublicUser;
-                            console.log("[chatSlice] USER_JOINED:", newUser);
+                            console.log("[chatSlice] USER_JOINED");
                             if (
                                 !state.participants.some(
                                     (user) => user.id === newUser.id

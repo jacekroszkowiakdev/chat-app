@@ -7,12 +7,8 @@ export function handleUserJoined(
 ): PublicUser | null {
     const user = getPublicUserById(userId);
 
-    // console.log("[handleUserJoined] Looking up userId:", userId);
-    // console.log("[handleUserJoined] Found user in Map:", user);
-    // console.log("[handleUserJoined] Incoming userData:", userData);
-
     if (!user) {
-        console.log(`User not found: ${userId}`);
+        console.warn(`[UserHandler] User not found: ${userId}`);
         return null;
     }
 

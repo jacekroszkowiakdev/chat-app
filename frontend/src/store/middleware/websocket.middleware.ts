@@ -25,21 +25,21 @@ export const websocketMiddleware: Middleware<unknown, RootState> =
 
             socket.onopen = () => {
                 store.dispatch(connected());
-                console.log("Connected to WebSocket server");
+                console.log("[WebSocket] Connected to server");
             };
 
             socket.onmessage = (event) => {
-                const message = JSON.parse(event.data);
-                console.log("typeof message:", typeof message);
-                console.log("message.type:", message.type);
-                console.log("Received from WebSocket server:", message);
-
-                store.dispatch(messageReceived(message));
+                try {
+                    const message = JSON.parse(event.data);
+                    store.dispatch(messageReceived(message));
+                } catch (error) {
+                    console.error("[WebSocket] Error parsing message:", error);
+                }
             };
 
             socket.onclose = () => {
                 store.dispatch(disconnected());
-                console.log("Disconnected from WebSocket server");
+                console.warn("[WebSocket] Disconnected from server");
 
                 if (shouldReconnect) {
                     setTimeout(() => {
@@ -49,7 +49,7 @@ export const websocketMiddleware: Middleware<unknown, RootState> =
             };
 
             socket.onerror = (error) => {
-                console.error("WebSocket error:", error);
+                console.error("[WebSocket] Connection error:", error);
                 store.dispatch(connectionError("WebSocket connection error"));
             };
         }
@@ -70,10 +70,9 @@ export const websocketMiddleware: Middleware<unknown, RootState> =
                 (socket.readyState === WebSocket.OPEN ||
                     socket.readyState === WebSocket.CONNECTING)
             ) {
-                console.log("Sending to WebSocket server:", action.payload);
                 socket.send(JSON.stringify(action.payload));
             } else {
-                console.error("WebSocket is not open. Cannot send message.");
+                console.warn("[WebSocket] Cannot send — socket not open");
                 store.dispatch(
                     connectionError(
                         "WebSocket is not open. Cannot send message."

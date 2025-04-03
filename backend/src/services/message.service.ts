@@ -28,15 +28,15 @@ export function editMessage(
     );
 
     if (indexToEdit === -1) {
-        console.log(`Message not found: ${messageId}`);
+        console.warn(`Message not found: ${messageId}`);
         return null;
     }
 
     const message = messages[indexToEdit];
 
     if (message.userId !== userId) {
-        console.log(
-            `User ${userId} does not have permission to edit this message`
+        console.warn(
+            `User ${userId} does not have permission to edit message ${messageId}`
         );
         return null;
     }
@@ -57,15 +57,15 @@ export function deleteMessage(
     );
 
     if (indexToDelete === -1) {
-        console.log(`[Backend] Message not found: ${messageId}`);
+        console.warn(`[MessageService] Message not found: ${messageId}`);
         return null;
     }
 
     const message = messages[indexToDelete];
 
     if (message.userId !== userId) {
-        console.log(
-            `[Backend] User ${userId} has no permission to delete message ${messageId}`
+        console.warn(
+            `[MessageService] User ${userId} has no permission to delete message ${messageId}`
         );
         return null;
     }
