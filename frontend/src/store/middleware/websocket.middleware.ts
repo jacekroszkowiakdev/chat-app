@@ -21,7 +21,7 @@ export const websocketMiddleware: Middleware<unknown, RootState> =
         if (connectWebSocket.match(action)) {
             if (socket && socket.readyState === WebSocket.OPEN) return;
 
-            socket = new WebSocket("ws://localhost:3001");
+            socket = new WebSocket(import.meta.env.VITE_WS_URL);
 
             socket.onopen = () => {
                 store.dispatch(connected());

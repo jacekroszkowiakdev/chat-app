@@ -1,5 +1,5 @@
 import "./MessageComposer.css";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { useSendMessage } from "../../../../hooks/useSendMessage";
 import { Message } from "../../../../types/types";
 
@@ -18,6 +18,7 @@ const MessageComposer: React.FC<MessageComposerProps> = ({
     const [messageInput, setMessageInput] = useState(
         editingMessage?.content || ""
     );
+    const textareaRef = useRef<HTMLTextAreaElement>(null);
 
     useEffect(() => {
         if (editingMessage) {
@@ -53,6 +54,7 @@ const MessageComposer: React.FC<MessageComposerProps> = ({
                 Message input
             </label>
             <textarea
+                ref={textareaRef}
                 id="message-input"
                 className="composer-textarea"
                 name="message"

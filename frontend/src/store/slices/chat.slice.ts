@@ -14,8 +14,6 @@ const initialState: ChatState = {
     error: null,
 };
 
-// push chat log message util
-
 export function pushChatLogMessage(
     messages: Message[],
     user: PublicUser,
@@ -47,6 +45,9 @@ const chatSlice = createSlice({
             state.messages = [];
             state.participants = [];
             state.error = null;
+        },
+        addMockMessages: (state, action: PayloadAction<Message[]>) => {
+            state.messages = [...state.messages, ...action.payload];
         },
     },
     extraReducers: (builder) => {
@@ -170,5 +171,5 @@ const chatSlice = createSlice({
     },
 });
 
-export const { clearChat } = chatSlice.actions;
+export const { clearChat, addMockMessages } = chatSlice.actions;
 export default chatSlice.reducer;

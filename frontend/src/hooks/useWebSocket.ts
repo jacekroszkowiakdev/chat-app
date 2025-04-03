@@ -11,6 +11,7 @@ export function useWebSocket(joined: boolean) {
     useEffect(() => {
         if (!joined) return;
         dispatch(connectWebSocket());
+
         return () => {
             dispatch(disconnectWebSocket());
         };
