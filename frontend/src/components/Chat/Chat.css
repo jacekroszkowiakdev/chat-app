@@ -86,15 +86,6 @@
     padding: 1rem;
 }
 
-.message-list::-webkit-scrollbar {
-    width: 8px;
-}
-
-.message-list::-webkit-scrollbar-thumb {
-    background-color: #ccc;
-    border-radius: 4px;
-}
-
 .message-item {
     margin-bottom: 1rem;
     padding-bottom: 0.5rem;

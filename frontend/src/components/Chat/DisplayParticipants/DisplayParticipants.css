@@ -22,13 +22,3 @@
     background-color: #fff;
     border-bottom: 8px;
 }
-
-.participants-list {
-    padding: 1rem;
-    list-style: none;
-    justify-items: left;
-    margin: 0;
-    padding: 0;
-    flex: 1;
-    overflow-y: auto;
-}
