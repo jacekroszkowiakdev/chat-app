@@ -2,7 +2,7 @@ import "./ThemeToggle.css";
 import { useSelector, useDispatch } from "react-redux";
 import { RootState } from "../../../store/store";
 import { toggleDarkMode } from "../../../store/slices/theme.slice";
-import { CgDarkMode } from "react-icons/cg"; // ✅ Make sure this matches your icon library
+import { CgDarkMode } from "react-icons/cg";
 
 const ThemeToggle = () => {
     const dispatch = useDispatch();
