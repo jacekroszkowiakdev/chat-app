@@ -32,7 +32,7 @@ const MessageComposer: React.FC<MessageComposerProps> = ({
         setMessageInput(e.target.value);
     };
 
-    const handleSendMessage = (e: React.FormEvent) => {
+    const handleSubmitMessage = (e: React.FormEvent) => {
         e.preventDefault();
         if (editingMessage) {
             onEdit(editingMessage.id, messageInput);
@@ -42,12 +42,17 @@ const MessageComposer: React.FC<MessageComposerProps> = ({
         setMessageInput("");
     };
 
+    const handleSave = () => {
+        if (!messageInput.trim()) return;
+        onEdit(editingMessage!.id, messageInput);
+    };
+
     return (
         <div className="message-composer">
             <label htmlFor="message-input" className="sr-only">
                 Message input
             </label>
-            <form onSubmit={handleSendMessage}>
+            <form onSubmit={handleSubmitMessage}>
                 <input
                     ref={inputRef}
                     id="message-input"
@@ -63,12 +68,14 @@ const MessageComposer: React.FC<MessageComposerProps> = ({
             {editingMessage && (
                 <div className="composer-actions">
                     <button
+                        type="button"
                         className="composer-button save"
-                        onClick={() => onEdit(editingMessage.id, messageInput)}
+                        onClick={handleSave}
                     >
                         Save
                     </button>
                     <button
+                        type="button"
                         className="composer-button cancel"
                         onClick={onCancelEdit}
                     >
