@@ -18,7 +18,7 @@ const MessageComposer: React.FC<MessageComposerProps> = ({
     const [messageInput, setMessageInput] = useState(
         editingMessage?.content || ""
     );
-    const textareaRef = useRef<HTMLTextAreaElement>(null);
+    const inputRef = useRef<HTMLInputElement>(null);
 
     useEffect(() => {
         if (editingMessage) {
@@ -28,18 +28,12 @@ const MessageComposer: React.FC<MessageComposerProps> = ({
         }
     }, [editingMessage]);
 
-    const handleInputChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+    const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         setMessageInput(e.target.value);
     };
 
-    const handleSendOnEnter = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
-        if (e.key === "Enter" && !e.shiftKey) {
-            e.preventDefault();
-            handleSendMessage();
-        }
-    };
-
-    const handleSendMessage = () => {
+    const handleSendMessage = (e: React.FormEvent) => {
+        e.preventDefault();
         if (editingMessage) {
             onEdit(editingMessage.id, messageInput);
         } else {
@@ -53,16 +47,19 @@ const MessageComposer: React.FC<MessageComposerProps> = ({
             <label htmlFor="message-input" className="sr-only">
                 Message input
             </label>
-            <textarea
-                ref={textareaRef}
-                id="message-input"
-                className="composer-textarea"
-                name="message"
-                value={messageInput}
-                onChange={handleInputChange}
-                onKeyDown={handleSendOnEnter}
-                placeholder={editingMessage ? "Editing message..." : "Message"}
-            />
+            <form onSubmit={handleSendMessage}>
+                <input
+                    ref={inputRef}
+                    id="message-input"
+                    className="composer-textarea"
+                    name="message"
+                    value={messageInput}
+                    onChange={handleInputChange}
+                    placeholder={
+                        editingMessage ? "Editing message..." : "Message"
+                    }
+                />
+            </form>
             {editingMessage && (
                 <div className="composer-actions">
                     <button
